@@ -1,5 +1,4 @@
 #!/bin/bash
-# This script sends a request to 0.0.0.0:5000/catch_me that causes the server
-# to respond with "You got me!" in the body of the response.
+# Script to send a request to 0.0.0.0:5000/catch_me that results in a "You got me!" response.
 
-curl -sLX PUT 0.0.0.0:5000/catch_me -d "user_id=98" -H "Origin: HolbertonSchool"
+curl -sX PUT 0.0.0.0:5000/catch_me -H "Origin: School" -d "user_id=98" -L
