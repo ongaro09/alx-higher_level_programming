@@ -1,27 +1,32 @@
 #!/usr/bin/node
+const request = require('request');
 
-const axios = require('axios');
+function getCharactersByMovieId(movieId) {
+    console.log("Starting fetch for movie ID:", movieId);
+    request(`https://swapi-api.alx-tools.com/films/${movieId}`, { json: true }, (err, res, body) => {
+        if (err) { return console.log(err); }
+        console.log("Movie data fetched:", body);
 
-async function getCharactersByMovieId(movieId) {
-    try {
+        const characterUrls = body.characters;
+        console.log("Character URLs:", characterUrls);
 
-        const response = await axios.get(
-	    `https://swapi.dev/api/films/${movieId}/`
-	);
+        let completedRequests = 0;
+        const characters = [];
 
+        characterUrls.forEach(url => {
+            request(url, { json: true }, (err, res, body) => {
+                if (err) { return console.log(err); }
+                characters.push(body.name);
+                completedRequests++;
+                if (completedRequests === characterUrls.length) {
 
-        const characterUrls = response.data.characters;
-
-
-        const characterPromises = characterUrls.map(url => axios.get(url));
-        const charactersResponses = await Promise.all(characterPromises);
-
-
-        charactersResponses.forEach(characterResponse => {
-            console.log(characterResponse.data.name);
+                    console.log("Characters fetched:");
+                    characters.forEach(name => {
+                        console.log(name);
+                    });
+                }
+            });
         });
-    } catch (error) {
-        console.error('Failed to fetch data:', error);
-    }
+    });
 }
 
